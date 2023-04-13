@@ -46,6 +46,11 @@ def configure_logging():
                     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                     datefmt='%H:%M:%S',
                     level=logging.DEBUG)
+    logging.basicConfig(filename='ai_output.txt',
+                    filemode='a',
+                    format='%(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.INFO)
     return logging.getLogger('AutoGPT')
 
 def check_openai_api_key():
@@ -68,7 +73,18 @@ async def print_to_console(
     """Prints text to the console with a typing effect"""
     global cfg
     global logger
-    await cfg.bot.send_message(cfg.chat_id, title + ": " + content)
+    if content:
+        logger.info(title + ': ' + content)
+
+
+@dp.message_handler(commands=['logs'])
+async def show_latest_aig_logs(message: types.Message):
+    """Show the latest logs from the AI"""
+    lines_before = 100
+    with open('ai_output.txt', 'r') as f:
+        lines = f.readlines()
+        for line in lines[-lines_before:]:
+            await cfg.bot.send_message(message.chat.id, ai_config.ai_name + ": " + line)
 
 
 async def attempt_to_fix_json_by_finding_outermost_brackets(json_string):
@@ -108,7 +124,7 @@ async def print_assistant_thoughts(assistant_reply):
             # Parse and print Assistant response
             assistant_reply_json = fix_and_parse_json(assistant_reply)
         except json.JSONDecodeError as e:
-            await print_to_console("Error: Invalid JSON in assistant thoughts\n", assistant_reply)
+            # await print_to_console("Error: Invalid JSON in assistant thoughts\n", assistant_reply)
             assistant_reply_json = await attempt_to_fix_json_by_finding_outermost_brackets(assistant_reply)
             assistant_reply_json = fix_and_parse_json(assistant_reply_json)
 
