@@ -8,6 +8,8 @@ services:
     init: true
     stop_grace_period: 1m
     tty: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - autogpt
     user: "${UID}:${GID}"
@@ -53,6 +55,7 @@ services:
       - WIPE_REDIS_ON_START=${WIPE_REDIS_ON_START}
       - UID=${UID}
       - GID=${GID}
+      - OPENAI_API_BASE=http://host.docker.internal:8000/v1
     ports:
       - 8080:8080
     command: ["gotty", "--port", "8080", "--permit-write", "--title-format", "AutoGPT Terminal", "bash", "-c", "python scripts/main.py ${COMMAND_LINE_PARAMS}"]
