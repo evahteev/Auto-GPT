@@ -71,11 +71,14 @@ class LocalCache(MemoryProviderSingleton):
         )
 
         with open(self.filename, 'wb') as f:
-            out = orjson.dumps(
-                self.data,
-                option=SAVE_OPTIONS
-            )
-            f.write(out)
+            try:
+                out = orjson.dumps(
+                    self.data,
+                    option=SAVE_OPTIONS
+                )
+                f.write(out)
+            except Exception as e:
+                print(f"Error: Could not save memory to file. {e}")
         return text
 
     def clear(self) -> str:

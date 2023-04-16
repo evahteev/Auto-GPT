@@ -31,7 +31,25 @@ def fix_and_parse_json(
     json_str: str,
     try_to_fix_with_gpt: bool = True
 ) -> Union[str, Dict[Any, Any]]:
-    """Fix and parse JSON string"""
+    """
+    Fix and parse JSON string
+    {
+    "thoughts": {
+        "text": "To determine which next command to use, I could start by analyzing top ERC20 tokens markets and providing suggestions of 10 investment opportunities today.",
+        "reasoning": "Since my goal is to provide investment opportunities, it makes sense to start by analyzing the top ERC20 tokens markets. This will give me an idea of which tokens are currently trending and performing well, and I can make recommendations based on that information.",
+        "plan": "- Perform a Google search for top ERC20 tokens markets\n- Analyze the data to determine the top 10 tokens to invest in\n- Provide a list of recommendations",
+        "criticism": "I should make sure that my analysis is thorough and that I'm using reliable sources for my information. Additionally, I should consider other factors that may impact the performance of these tokens, such as market trends, news events, and competition.",
+        "speak": "I will start by analyzing top ERC20 tokens markets to provide suggestions of the 10 best investment opportunities today."
+    },
+    "command": {
+        "name": "google",
+        "args": {
+            "input": "top ERC20 tokens markets"
+        }
+    }
+}
+
+    """
     try:
         json_str = json_str.replace('\t', '')
         return json.loads(json_str)

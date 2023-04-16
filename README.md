@@ -1,3 +1,5 @@
+OPENAI_API_BASE=http://localhost:8000/v1;PYTHONUNBUFFERED=1
+
 # Auto-GPT: An Autonomous GPT-4 Experiment
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/Torantulino/auto-gpt?style=social)
