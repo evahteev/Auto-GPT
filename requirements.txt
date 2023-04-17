@@ -18,3 +18,6 @@ Pillow
 coverage
 flake8
 numpy
+abstract-singleton
+pytest
+openapi-python-client

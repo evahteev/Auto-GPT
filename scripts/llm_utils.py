@@ -49,4 +49,7 @@ def create_chat_completion(messages, model=None, temperature=cfg.temperature, ma
     if response is None:
         raise RuntimeError("Failed to get response after 5 retries")
 
-    return response.choices[0].message["content"]
+    resp = response.choices[0].message["content"]
+    for plugin in cfg.plugins:
+        resp = plugin.on_response(resp)
+    return resp

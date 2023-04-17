@@ -1,22 +1,23 @@
+import argparse
 import json
-import random
-import commands as cmd
-import utils
-from memory import get_memory, get_supported_memory_backends
-import chat
+import logging
+import os
+import traceback
+from pathlib import Path
+
 from colorama import Fore, Style
-from spinner import Spinner
-import time
+
+import chat
+import commands as cmd
 import speak
+import utils
+from ai_config import AIConfig
 from config import Config
 from json_parser import fix_and_parse_json
-from ai_config import AIConfig
-import traceback
-import yaml
-import argparse
 from logger import logger
-import logging
-from prompt import get_prompt
+from memory import get_memory, get_supported_memory_backends
+from scripts.plugins import init_plugins
+from spinner import Spinner
 
 cfg = Config()
 
@@ -353,6 +354,11 @@ class Agent:
         self.next_action_count = next_action_count
         self.prompt = prompt
         self.user_input = user_input
+        self.cfg = cfg
+        self.init_plugins()
+
+    def init_plugins(self):
+        self.cfg = init_plugins('plugins',  self.cfg)
 
     def start_interaction_loop(self):
         # Interaction Loop

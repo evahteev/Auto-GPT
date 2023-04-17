@@ -92,6 +92,10 @@ class Config(metaclass=Singleton):
         # Initialize the OpenAI API client
         openai.api_key = self.openai_api_key
 
+        self.plugins = []
+        self.plugins_whitelist = []
+        self.plugins_blacklist = []
+
     def get_azure_deployment_id_for_model(self, model: str) -> str:
         """
         Returns the relevant deployment id for the model specified.
@@ -204,3 +208,7 @@ class Config(metaclass=Singleton):
     def set_debug_mode(self, value: bool):
         """Set the debug mode value."""
         self.debug_mode = value
+
+    def set_plugins(self, value: list):
+        """Set the plugins value."""
+        self.plugins = value
