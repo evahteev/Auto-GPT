@@ -1,25 +1,23 @@
+import argparse
 import json
-import random
-import commands as cmd
-import utils
-from memory import get_memory, get_supported_memory_backends
-import chat
+import logging
+import os
+import traceback
+from pathlib import Path
+
 from colorama import Fore, Style
-from spinner import Spinner
-import time
+
+import chat
+import commands as cmd
 import speak
+import utils
+from ai_config import AIConfig
 from config import Config
 from json_parser import fix_and_parse_json
-from plugins import load_plugins
-from ai_config import AIConfig
-import os
-from pathlib import Path
-import traceback
-import yaml
-import argparse
 from logger import logger
-import logging
-from prompt import get_prompt
+from memory import get_memory, get_supported_memory_backends
+from scripts.plugins import init_plugins
+from spinner import Spinner
 
 cfg = Config()
 
@@ -356,31 +354,11 @@ class Agent:
         self.next_action_count = next_action_count
         self.prompt = prompt
         self.user_input = user_input
+        self.cfg = cfg
         self.init_plugins()
 
     def init_plugins(self):
-        plugins_found = load_plugins(Path(os.getcwd()) / "plugins")
-        loaded_plugins = []
-        for plugin in plugins_found:
-            if plugin.__name__ in cfg.plugins_blacklist:
-                continue
-            if plugin.__name__ in cfg.plugins_whitelist:
-                loaded_plugins.append(plugin())
-            else:
-                ack = input(
-                    f"WARNNG Plugin {plugin.__name__} found. But not in the"
-                    " whitelist... Load? (y/n): "
-                )
-                if ack.lower() == "y":
-                    loaded_plugins.append(plugin())
-
-        if loaded_plugins:
-            print(f"\nPlugins found: {len(loaded_plugins)}\n"
-                  "--------------------")
-        for plugin in loaded_plugins:
-            print(f"{plugin._name}: {plugin._version} - {plugin._description}")
-
-        cfg.set_plugins(loaded_plugins)
+        self.cfg = init_plugins('plugins',  self.cfg)
 
     def start_interaction_loop(self):
         # Interaction Loop
